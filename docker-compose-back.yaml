@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  back-blue:
+    container_name: back-blue
+    image: weatherdecenhub.store/itcen-back-blue
+    expose:
+      - 8080
+    ports:
+      - 80:8080
+    env_file:
+      - .env        # 이 한 줄로 모든 환경변수를 로드함
+    environment:
+      TZ: Asia/Seoul
+    networks:
+      - backend
+
+networks:
+  backend:
+    external: true
