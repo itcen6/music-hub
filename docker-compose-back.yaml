@@ -1,9 +1,9 @@
 version: "3"
 
 services:
-  back-blue:
-    container_name: back-blue
-    image: weatherdecenhub.store/itcen-back-blue
+  music:
+    container_name: music
+    image: weatherdecenhub.store/music-hub
     expose:
       - 8080
     ports:
