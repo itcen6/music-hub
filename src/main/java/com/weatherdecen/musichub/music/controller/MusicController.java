@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author 전하은
  * */
 @RestController
-@RequestMapping("/api/music")
+@RequestMapping("/broadcast/music")
 @RequiredArgsConstructor
 public class MusicController {
 
