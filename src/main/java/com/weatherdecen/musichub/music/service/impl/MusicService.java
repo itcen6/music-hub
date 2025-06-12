@@ -58,7 +58,7 @@ public class MusicService implements IMusicService {
         if(isNull(music)) return;
 
         sendMusicUpdateToClients(music);
-        log.info("[브로드캐스트 음악 송신 - 음악 정보 : {}, 현재 재생 초 : {}]", music.getMusic().getTitle(), music.getStartTime());
+        log.info("[(LOCK 적용)브로드캐스트 음악 송신 - 음악 정보 : {}, 현재 재생 초 : {}]", music.getMusic().getTitle(), music.getStartTime());
     }
 
     public void updateCurrentPlayingMusic() {
