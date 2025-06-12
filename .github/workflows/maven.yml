@@ -33,7 +33,6 @@ jobs:
       - name: Generate .env and .env.docker file from GitHub Secrets
         run: |
           echo "${{ secrets.ENV_FILE }}" > .env
-          echo "DOCKER_IMAGE_BLUE=${{ secrets.DOCKER_IMAGE_BLUE }}" > .env.docker
 
       - name: Create deployable zip
         run: |
@@ -42,7 +41,6 @@ jobs:
           cp ./deploy.sh ./deploy/
           cp ./docker-compose-back.yaml ./deploy/
           cp .env ./deploy/
-          cp .env.docker ./deploy/
           zip -r -qq -j ./$GITHUB_SHA.zip ./deploy
 
       - name: Configure AWS credentials
@@ -60,8 +58,8 @@ jobs:
       - name: Trigger AWS CodeDeploy
         run: |
           aws deploy create-deployment \
-            --application-name itcen \
-            --deployment-group-name back-main \
+            --application-name custom \
+            --deployment-group-name custom \
             --deployment-config-name CodeDeployDefault.AllAtOnce \
             --s3-location bucket=${{ secrets.BUCKET_NAME }},bundleType=zip,key=${{ secrets.BUCKET_PREFIX }}/$GITHUB_SHA.zip \
             --region ${{ secrets.AWS_REGION }}
