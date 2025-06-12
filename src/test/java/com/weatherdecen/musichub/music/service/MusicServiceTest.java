@@ -3,6 +3,7 @@ package com.weatherdecen.musichub.music.service;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import com.weatherdecen.musichub.music.dto.RecommendMusic;
@@ -47,11 +48,11 @@ public class MusicServiceTest {
 
         List<RecommendMusic> recommendMusics = redisService.getPlayList();
         Integer index = redisService.getIndex();
-        Long startTime = redisService.getStartTime();
+        ZonedDateTime playTime = redisService.getPlayTime();
 
         assertThat(recommendMusics).isNotNull();
         assertThat(recommendMusics.size()).isNotEqualTo(0);
         assertEquals(0, index);
-        assertEquals(0L, startTime);
+        assertThat(playTime).isNotNull();
     }
 }
