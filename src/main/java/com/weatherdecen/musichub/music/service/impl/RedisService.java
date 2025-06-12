@@ -12,6 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,7 +34,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 public class RedisService implements IRedisService {
     private final String PLAYLIST_KEY = "broadcast:playlist";
     private final String INDEX_KEY = "broadcast:index";
-    private final String START_TIME_KEY = "broadcast:startTime";
+    private final String PLAY_TIME_KEY = "broadcast:playTime";
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final RedisTemplate<String, String> redisStringTemplate;
@@ -43,9 +46,9 @@ public class RedisService implements IRedisService {
         return index == null ? null : Integer.parseInt(index);
     }
 
-    public Long getStartTime() {
-        String startTime = (String) redisStringTemplate.opsForValue().get(START_TIME_KEY);
-        return startTime == null ? null : Long.parseLong(startTime);
+    public ZonedDateTime getPlayTime(){
+        String startTime = (String) redisStringTemplate.opsForValue().get(PLAY_TIME_KEY);
+        return ZonedDateTime.parse(startTime);
     }
 
     public List<RecommendMusic> getPlayList() {
@@ -80,7 +83,7 @@ public class RedisService implements IRedisService {
         redisTemplate.opsForValue().set(INDEX_KEY, index);
     }
 
-    public void setStartTime(Long startTime){ redisTemplate.opsForValue().set(START_TIME_KEY, startTime); }
+    public void setPlayTime(){ redisStringTemplate.opsForValue().set(PLAY_TIME_KEY, Instant.now().atZone(ZoneId.of("Asia/Seoul")).toString()); }
 
     public void deletePlayList(){ redisTemplate.delete(PLAYLIST_KEY); }
 

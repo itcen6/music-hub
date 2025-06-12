@@ -2,6 +2,7 @@ package com.weatherdecen.musichub.music.service;
 
 import com.weatherdecen.musichub.music.dto.RecommendMusic;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
@@ -18,10 +19,10 @@ public interface IRedisService {
     Integer getIndex();
 
     /**
-     * 레디스 음악 재생시간 조회
-     * @since 2025-05-26
+     * 레디스 음악 재생시각 조회
+     * @since 2025-06-04
      */
-    Long getStartTime();
+    ZonedDateTime getPlayTime();
 
     /**
      * 레디스 플레이리스트 조회
@@ -48,10 +49,10 @@ public interface IRedisService {
     void setIndex(int index);
 
     /**
-     * 레디스 음악 재생시간 저장
-     * @since 2025-05-26
+     * 레디스 음악 재생시각 저장
+     * @since 2025-06-04
      */
-    void setStartTime(Long startTime);
+    void setPlayTime();
 
     /**
      * 레디스 기존 playlist 삭제

@@ -13,9 +13,13 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.time.Duration;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import static java.util.Objects.isNull;
 import static org.springframework.util.CollectionUtils.isEmpty;
+
 
 
 /**
@@ -41,9 +45,6 @@ public class MusicService implements IMusicService {
         initPlaylist();
         setPlaylist(prompt.toString());
 
-        // 현재 노래 전송
-        redisService.publishToRedisChannel(redisService.getIndex());
-
         return true;
     }
 
@@ -64,10 +65,11 @@ public class MusicService implements IMusicService {
         RecommendMusic music = redisService.getCurrentMusic();
         if(isNull(music)) return null;
 
-        Long startTime = redisService.getStartTime();
-        if(isNull(startTime)) return null;
+        ZonedDateTime playTime = redisService.getPlayTime();
+        if(isNull(playTime)) return null;
 
-        return BroadcastMusic.builder().music(music).startTime(startTime).build();
+        long elapsed = Duration.between(playTime, ZonedDateTime.now(ZoneId.of("Asia/Seoul"))).getSeconds();
+        return BroadcastMusic.builder().music(music).startTime(elapsed).build();
     }
 
     public List<RecommendMusic> getPlaylist() {
@@ -76,7 +78,7 @@ public class MusicService implements IMusicService {
 
     private void initPlaylist() {
         redisService.setIndex(0);
-        redisService.setStartTime(0L);
+        redisService.setPlayTime();
     }
 
     private void setPlaylist(String prompt) {
@@ -88,7 +90,7 @@ public class MusicService implements IMusicService {
     }
 
     private void resetIndexIfOutOfBounds() {
-        if(!isEmpty(redisService.getPlayList()) && (redisService.getIndex() > redisService.getPlayList().size())){
+        if(!isEmpty(redisService.getPlayList()) && (redisService.getIndex() > redisService.getPlayList().size() - 1)){
             initPlaylist();
         }
     }
@@ -124,28 +126,29 @@ public class MusicService implements IMusicService {
         Integer index = redisService.getIndex();
         if(isNull(index)) return;
 
-        Long startTime = redisService.getStartTime();
-        if(isNull(startTime)) return;
+        ZonedDateTime playTime = redisService.getPlayTime();
+        if(isNull(playTime)) return;
 
-        redisService.setStartTime(startTime + 1);
-
-        if (isMusicStart(index, startTime)){
+        if (isMusicStart(index, playTime)){
             redisService.publishToRedisChannel(index + 1);
+            return;
         }
 
-        if (isMusicFinish(music, startTime)) {
-            redisService.setStartTime(0L);
+        if (isMusicFinish(music, playTime)) {
             redisService.setIndex(index + 1);
+            redisService.setPlayTime();
 
             redisService.publishToRedisChannel(index + 1);
         }
     }
 
-    private static boolean isMusicStart(int index, Long startTime) {
-        return index == 0 && startTime == 0;
+    private static boolean isMusicStart(int index, ZonedDateTime startTime) {
+        ZonedDateTime now = ZonedDateTime.now();
+        return index == 0 && now.toEpochSecond() == startTime.toEpochSecond();
     }
 
-    private static boolean isMusicFinish(RecommendMusic currentMusic, Long startTime) {
-        return (startTime * 1000) >= currentMusic.getMusicLength();
+    private static boolean isMusicFinish(RecommendMusic currentMusic, ZonedDateTime startTime) {
+        long elapsedSeconds = Duration.between(startTime, ZonedDateTime.now(ZoneId.of("Asia/Seoul"))).getSeconds();
+        return elapsedSeconds >= (currentMusic.getMusicLength() / 1000);
     }
 }
