@@ -32,9 +32,9 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 @RequiredArgsConstructor
 @Slf4j
 public class RedisService implements IRedisService {
-    private final String PLAYLIST_KEY = "broadcast:playlist";
-    private final String INDEX_KEY = "broadcast:index";
-    private final String PLAY_TIME_KEY = "broadcast:playTime";
+    private final String PLAYLIST_KEY = "music:playlist";
+    private final String INDEX_KEY = "music:index";
+    private final String PLAY_TIME_KEY = "music:playTime";
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final RedisTemplate<String, String> redisStringTemplate;
