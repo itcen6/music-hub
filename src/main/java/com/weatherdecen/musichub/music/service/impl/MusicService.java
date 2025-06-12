@@ -121,7 +121,7 @@ public class MusicService implements IMusicService {
     }
 
     private void sendMusicUpdateToClients(BroadcastMusic broadcastMusic) {
-        messagingTemplate.convertAndSend("/api/music", broadcastMusic);
+        messagingTemplate.convertAndSend("/broadcast/music", broadcastMusic);
     }
 
     private void setCurrentPlayingMusic() {

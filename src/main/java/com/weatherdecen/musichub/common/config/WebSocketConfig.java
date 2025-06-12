@@ -25,13 +25,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
-		registry.enableSimpleBroker("/api/music");
-		registry.setApplicationDestinationPrefixes("/api/music/send");
+		registry.enableSimpleBroker("/broadcast/music");
+		registry.setApplicationDestinationPrefixes("/broadcast/music/send");
 	}
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/api/music/ws-stomp")
+		registry.addEndpoint("/broadcast/music/ws-stomp")
 				.setAllowedOriginPatterns("*")
 				.withSockJS();
 	}
