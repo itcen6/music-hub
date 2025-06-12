@@ -27,7 +27,7 @@ jobs:
         run: |
           docker buildx build \
             --platform linux/arm64 \
-            -t ${{ secrets.REGISTRY_HOST }}/itcen-back-blue:latest \
+            -t ${{ secrets.REGISTRY_HOST }}/music-hub:latest \
             --push .
 
       - name: Generate .env and .env.docker file from GitHub Secrets
