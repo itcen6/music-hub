@@ -55,12 +55,6 @@ public interface IRedisService {
     void setPlayTime();
 
     /**
-     * 레디스 기존 playlist 삭제
-     * @since 2025-06-04
-     */
-    void deletePlayList();
-
-    /**
      * 레디스 채널 생성
      * @since 2025-05-26
      */

@@ -23,11 +23,6 @@ public class MusicController {
 
     private final IMusicService musicService;
 
-    @GetMapping("/initRecommendMusics")
-    public ApiResponse<Boolean> initRecommendMusics(@RequestParam(name = "prompt") Double prompt) {
-        return ApiResponse.createSuccess(musicService.initRecommendMusics(prompt));
-    }
-
     @GetMapping("/getCurrentPlayingMusic")
     public ApiResponse<BroadcastMusic> getCurrentPlayingMusic() {
         return ApiResponse.createSuccess(musicService.getCurrentPlayingMusic());

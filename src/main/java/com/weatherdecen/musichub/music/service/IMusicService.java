@@ -14,12 +14,6 @@ import java.util.List;
 public interface IMusicService {
 
     /**
-     * 추천 음악 조회 및 재생 정보 초기화
-     * @since 2025-05-24
-     */
-    Boolean initRecommendMusics(Double prompt);
-
-    /**
      * 브로드캐스트 음악 송신
      * @since 2025-05-27
      */
@@ -36,10 +30,4 @@ public interface IMusicService {
      * @since 2025-05-27
      */
     BroadcastMusic getCurrentPlayingMusic();
-
-    /**
-     * 플레이리스트 조회
-     * @since 2025-06-02
-     */
-    List<RecommendMusic> getPlaylist();
 }

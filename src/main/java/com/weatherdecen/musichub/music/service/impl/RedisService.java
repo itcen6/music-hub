@@ -85,8 +85,6 @@ public class RedisService implements IRedisService {
 
     public void setPlayTime(){ redisStringTemplate.opsForValue().set(PLAY_TIME_KEY, Instant.now().atZone(ZoneId.of("Asia/Seoul")).toString()); }
 
-    public void deletePlayList(){ redisTemplate.delete(PLAYLIST_KEY); }
-
     public void publishToRedisChannel(Integer index) { publisher.publish("broadcast-channel", index); }
 
     private static boolean noIndexContent(List<RecommendMusic> recommendMusics, Integer index) {
