@@ -1,20 +1,18 @@
-version: "3"
-
 services:
-  music:
-    container_name: music
-    image: weatherdecenhub.store/music-hub
+  music-hub:
+    container_name: music-hub
+    image: docker-registry.hanwool.dev/music-hub
     expose:
       - 8080
     ports:
-      - 80:8080
+      - 16140:8080
     env_file:
-      - .env        # 이 한 줄로 모든 환경변수를 로드함
+      - ../.env
     environment:
       TZ: Asia/Seoul
     networks:
-      - backend
+      - itcen-backend
 
 networks:
-  backend:
+  itcen-backend:
     external: true
