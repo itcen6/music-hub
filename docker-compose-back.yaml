@@ -2,6 +2,7 @@ services:
   music-hub:
     container_name: music-hub
     image: docker-registry.hanwool.dev/music-hub
+    restart: always
     expose:
       - 8080
     ports:
