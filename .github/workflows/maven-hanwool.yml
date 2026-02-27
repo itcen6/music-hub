@@ -1,4 +1,4 @@
-name: Hanwool Java CI with Maven & CodeDeploy
+name: Hanwool Java CI with Maven & Remote Build
 
 on:
   push:
@@ -9,7 +9,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -23,36 +22,31 @@ jobs:
       - name: Build with Maven
         run: mvn clean package -DskipTests
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Build and Push Multi-Arch Image
-        run: |
-          docker buildx build \
-            --platform linux/amd64,linux/arm64 \
-            -t ${{ secrets.HANWOOL_REGISTRY_HOST }}/music-hub:latest \
-            --push .
-
-      - name: Upload docker-compose file
+      - name: Copy files to server
         uses: appleboy/scp-action@v0.1.3
         with:
           host: ${{ secrets.HANWOOL_SSH_HOST }}
           username: ${{ secrets.HANWOOL_SSH_USERNAME }}
-          password: ${{ secrets.HANWOOL_SSH_PASSWORD }}
+          key: ${{ secrets.HANWOOL_SSH_KEY }}
           port: ${{ secrets.HANWOOL_SSH_PORT_NUMBER }}
-          source: "docker-compose-back.yaml"
-          target: ${{ secrets.HANWOOL_WORK_DIR }}
+          source: "target/*.jar,Dockerfile,docker-compose-back.yaml"
+          target: ${{ secrets.HANWOOL_WORK_DIR }}/music-hub
 
-      - name: SSH into server and deploy
+      - name: SSH Remote Build and Deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HANWOOL_SSH_HOST }}
           username: ${{ secrets.HANWOOL_SSH_USERNAME }}
-          password: ${{ secrets.HANWOOL_SSH_PASSWORD }}
+          key: ${{ secrets.HANWOOL_SSH_KEY }}
           port: ${{ secrets.HANWOOL_SSH_PORT_NUMBER }}
           script: |
-            cd ${{ secrets.HANWOOL_WORK_DIR }}
+            cd ${{ secrets.HANWOOL_WORK_DIR }}/music-hub
+            
+            docker login ${{ secrets.HANWOOL_REGISTRY_HOST }} -u ${{ secrets.HANWOOL_REGISTRY_USER }} -p ${{ secrets.HANWOOL_REGISTRY_PASSWORD }}
+            
+            docker build -t ${{ secrets.HANWOOL_REGISTRY_HOST }}/music-hub:latest .
+            docker push ${{ secrets.HANWOOL_REGISTRY_HOST }}/music-hub:latest
+            
             docker compose -f docker-compose-back.yaml down || true
-            docker rmi -f ${{ secrets.HANWOOL_REGISTRY_HOST }}/music-hub:latest || true
-            docker pull ${{ secrets.HANWOOL_REGISTRY_HOST }}/music-hub:latest
             docker compose -f docker-compose-back.yaml up -d
+            docker image prune -f
