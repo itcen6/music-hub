@@ -42,7 +42,7 @@ jobs:
           script: |
             cd ${{ secrets.HANWOOL_WORK_DIR }}/music-hub
             
-            docker login ${{ secrets.HANWOOL_REGISTRY_HOST }} -u ${{ secrets.HANWOOL_REGISTRY_USER }} -p ${{ secrets.HANWOOL_REGISTRY_PASSWORD }}
+            echo "${{ secrets.HANWOOL_REGISTRY_PASSWORD }}" | docker login ${{ secrets.HANWOOL_REGISTRY_HOST }} -u ${{ secrets.HANWOOL_REGISTRY_USER }} --password-stdin
             
             docker build -t ${{ secrets.HANWOOL_REGISTRY_HOST }}/music-hub:latest .
             docker push ${{ secrets.HANWOOL_REGISTRY_HOST }}/music-hub:latest
